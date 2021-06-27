@@ -53,13 +53,13 @@ public:
 	int GetKillXP(TEnumAsByte<EKillXP> killType) const;
 	
 	UFUNCTION(BlueprintCallable)
-	bool IsDoubleKill(int firstKillTime, int secondKillTime) const;
+	bool IsDoubleKill(TArray<float> killTimeList) const;
 	
 	UFUNCTION(BlueprintCallable)
-	bool IsTripleKill(int firstKillTime, int secondKillTime, int thirdKillTime) const;
+	bool IsTripleKill(TArray<float> killTimeList) const;
 	
 	UFUNCTION(BlueprintCallable)
-	bool IsHeadKill(FVector headVect, FVector bulletImpactPoint) const;
+	bool IsHeadKill(FName hitBoneName) const;
 	
 	UFUNCTION(BlueprintCallable)
 	bool IsLongShotKill(FVector bulletImpactPoint, FVector gunNozlePos) const;

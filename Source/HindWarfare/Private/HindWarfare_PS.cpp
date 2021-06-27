@@ -53,24 +53,35 @@ int AHindWarfare_PS::GetKillXP(TEnumAsByte<EKillXP> killType) const
 	}
 }
 
-bool AHindWarfare_PS::IsDoubleKill(int firstKillTime, int secondKillTime) const
+bool AHindWarfare_PS::IsDoubleKill(TArray<float> killTimeList) const
 {
-	return (secondKillTime - firstKillTime) <= killLatency ? true : false;
-}
-
-bool AHindWarfare_PS::IsTripleKill(int firstKillTime, int secondKillTime, int thirdKillTime) const
-{
-	if ((thirdKillTime - secondKillTime) <= killLatency && (secondKillTime - firstKillTime) <= killLatency)
+	if (killTimeList.Num() > 1)
 	{
-		return true;
+		int lastIndex = killTimeList.Num() - 1;
+		float killDiff = 0;
+		killDiff = killTimeList[lastIndex] - killTimeList[lastIndex - 1];
+		return killDiff <= killLatency ? true : false;
 	}
 	return false;
 }
 
-bool AHindWarfare_PS::IsHeadKill(FVector headVect, FVector bulletImpactPoint) const
+bool AHindWarfare_PS::IsTripleKill(TArray<float> killTimeList) const
 {
-	float headShotBuffer = 10.0f;
-	return headVect.Equals(bulletImpactPoint,headShotBuffer);
+	if (killTimeList.Num() > 2)
+	{
+		int lastIndex = killTimeList.Num() - 1;
+		float killDiff1 = 0, killDiff2 = 0;
+		killDiff1 = killTimeList[lastIndex] - killTimeList[lastIndex - 1];
+		killDiff2 = killTimeList[lastIndex - 1] - killTimeList[lastIndex - 2];
+		return ((killDiff1 <= killLatency) && (killDiff2 <= killLatency) ? true : false);
+	}
+	return false;
+}
+
+bool AHindWarfare_PS::IsHeadKill(FName hitBoneName) const
+{
+	FName headBoneName("head");
+	return headBoneName.IsEqual(hitBoneName);
 }
 
 bool AHindWarfare_PS::IsLongShotKill(FVector bulletImpactPoint, FVector gunNozlePos) const
